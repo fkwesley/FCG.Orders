@@ -12,6 +12,7 @@ namespace Infrastructure.Context
         }
 
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Game> Games { get; set; }
         public DbSet<RequestLog> RequestLogs { get; set; }
         public DbSet<Trace> Traces { get; set; }
 

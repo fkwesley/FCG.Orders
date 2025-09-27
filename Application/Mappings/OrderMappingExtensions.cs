@@ -15,7 +15,7 @@ namespace Application.Mappings
             {
                 PaymentMethod = request.PaymentMethod,
                 Status = OrderStatus.PendingPayment,
-                UserId = request.UserId,
+                UserId = request.UserId.ToUpper(),
                 PaymentMethodDetails = request.PaymentMethodDetails,
                 ListOfGames = request.ListOfGames.Select(id => new Game { GameId = id }).ToList()
             };
@@ -30,7 +30,7 @@ namespace Application.Mappings
                 OrderId = request.OrderId,
                 PaymentMethod = request.PaymentMethod,
                 Status = OrderStatus.PendingPayment,
-                UserId = request.UserId,
+                UserId = request.UserId.ToUpper(),
                 PaymentMethodDetails = request.PaymentMethodDetails,
                 ListOfGames = request.ListOfGames.Select(id => new Game { GameId = id }).ToList()
             };
@@ -43,7 +43,7 @@ namespace Application.Mappings
             return new OrderResponse
             {
                 OrderId = entity.OrderId,
-                UserId = entity.UserId,
+                UserId = entity.UserId.ToUpper(),
                 PaymentMethod = entity.PaymentMethod,
                 PaymentMethodDetails = entity.PaymentMethodDetails,
                 Status = entity.Status,

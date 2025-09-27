@@ -17,13 +17,13 @@ namespace Tests.UnitTests.Application.Mappings
             {
                 CardNumber = "1234567890123456",
                 CardHolder = "John Doe",
-                ExpiryDate = DateTime.UtcNow.AddYears(2),
+                ExpiryDate = "2026-08",
                 Cvv = "123"
             };
 
             var request = new AddOrderRequest
             {
-                UserId = 42,
+                UserId = "carl.johnson",
                 ListOfGames = new List<int> { 1, 2 },
                 PaymentMethod = PaymentMethod.CreditCard,
                 PaymentMethodDetails = paymentDetails
@@ -54,14 +54,14 @@ namespace Tests.UnitTests.Application.Mappings
             {
                 CardNumber = "1234567890123456",
                 CardHolder = "John Doe",
-                ExpiryDate = DateTime.UtcNow.AddYears(2),
+                ExpiryDate = "2026-08",
                 Cvv = "123"
             };
 
             var entity = new Order
             {
                 OrderId = 99,
-                UserId = 42,
+                UserId = "max.payne",
                 ListOfGames = games,
                 PaymentMethod = PaymentMethod.CreditCard,
                 PaymentMethodDetails = paymentDetails,

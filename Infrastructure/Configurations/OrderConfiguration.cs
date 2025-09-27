@@ -18,7 +18,6 @@ namespace FCG.Infrastructure.Configurations
 
             builder.Property(o => o.Status).IsRequired().HasColumnType("INT");
             builder.Property(o => o.PaymentMethod).IsRequired().HasColumnType("INT");
-            builder.Property(o => o.TotalPrice).IsRequired().HasColumnType("DOUBLE");
 
             builder.Property(o => o.CreatedAt)
                 .IsRequired()
@@ -33,6 +32,9 @@ namespace FCG.Infrastructure.Configurations
                     v => v, // Grava no banco normalmente  
                     v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null // Força Kind como UTC ao ler  
                 );
+
+            builder.Ignore(o => o.PaymentMethodDetails);
+            builder.Ignore(o => o.TotalPrice);
         }
     }
 }

@@ -7,8 +7,8 @@ namespace Domain.Entities
     public class Order
     {
         public int OrderId { get; set; }
-        public required int UserId { get; set; }
-        public IEnumerable<Game> ListOfGames { get; set; } = new List<Game>(); // Propriedade de navegação para os jogos selecionados
+        public required string UserId { get; set; }
+        public ICollection<Game> ListOfGames { get; set; } = new List<Game>(); // Propriedade de navegação para os jogos selecionados
         public required OrderStatus Status { get; set; }
         public required PaymentMethod PaymentMethod { get; set; }
         public PaymentMethodDetails? PaymentMethodDetails { get; set; } = null; 

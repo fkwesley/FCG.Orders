@@ -65,7 +65,7 @@ jobs:
       - name: Deploy to Container App - DEV
         run: |
           az containerapp update \
-            --name aca-fcg-Orders-dev \
+            --name aca-fcg-orders-dev \
             --resource-group RG_FCG \
             --image acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
@@ -92,7 +92,7 @@ jobs:
       - name: Deploy to Container App - UAT
         run: |
           az containerapp update \
-            --name aca-fcg-Orders-uat \
+            --name aca-fcg-orders-uat \
             --resource-group RG_FCG \
             --image acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
@@ -121,7 +121,7 @@ jobs:
       - name: Deploy to Container App - PRD
         run: |
           az containerapp update \
-            --name aca-fcg-Orders \
+            --name aca-fcg-orders \
             --resource-group RG_FCG \
             --image acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \

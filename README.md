@@ -130,7 +130,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
   ```
 - Executar as migrations para criar o banco de dados, passando a connectionString
   ```bash
-  Update-Database -Project FCG.Infrastructure -StartupProject FCG.API -Connection "Server=(localdb)\(instance);Database=FiapCloudGamesDb;Trusted_Connection=True;TrustServerCertificate=True"
+  Update-Database -Project Infrastructure -StartupProject API -Connection "Server=(server)\(instance);Database=(dbname);Trusted_Connection=True;TrustServerCertificate=True"
   ```
 - Rodar Testes
   ```bash
