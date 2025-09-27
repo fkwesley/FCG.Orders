@@ -4,6 +4,7 @@ using Domain.Enums;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,9 +19,15 @@ namespace Infrastructure.Repositories
         private readonly string _subscriptionKey;
         private readonly string _authorizationToken;
         private readonly ILoggerService _loggerService;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly IHttpContextAccessor _httpContext;
 
-        public GameRepository(HttpClient httpClient, IConfiguration configuration, ILoggerService loggerService, IHttpContextAccessor httpContextAccessor)
+        public GameRepository(
+                        HttpClient httpClient, 
+                        IConfiguration configuration, 
+                        ILoggerService loggerService, 
+                        IHttpContextAccessor httpContextAccessor,
+                        IServiceScopeFactory scopeFactory)
         {
             _httpClient = httpClient;
             _endpoint = configuration["GamesAPI:EndPoint"];
@@ -28,6 +35,7 @@ namespace Infrastructure.Repositories
             _authorizationToken = configuration["GamesAPI:Authorization"];
             _loggerService = loggerService;
             _httpContext = httpContextAccessor;
+            _scopeFactory = scopeFactory;
         }
 
         public Game GetGameById(int id)
@@ -38,12 +46,15 @@ namespace Infrastructure.Repositories
 
             var response = _httpClient.Send(request);
 
-            _loggerService.LogTraceAsync(new Trace()
+            using var scope = _scopeFactory.CreateScope();
+            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
+
+            loggerService.LogTraceAsync(new Trace()
             {
                 LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
                 Level = LogLevel.Debug,
                 Message = "Infra.GameRepository.GetGameById",
-                StackTrace = string.Format("StatusCode = {0} - Content = {1} ",response.StatusCode, response.Content)
+                StackTrace = string.Format("StatusCode = {0} - Content = {1} ",response.StatusCode, response.Content.ReadAsStringAsync())
             });
 
             if (response.StatusCode == HttpStatusCode.OK)
