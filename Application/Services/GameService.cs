@@ -1,5 +1,7 @@
 ﻿using Application.DTO.Game;
 using Application.Interfaces;
+using Domain.Entities;
+using Domain.Enums;
 using Domain.Repositories;
 using FCG.Application.Mappings;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +32,14 @@ namespace FCG.Application.Services
         public GameResponse GetGameById(int id)
         {
             var gameFound = _gameRepository.GetGameById(id);
+
+            _loggerService.LogTraceAsync(new Trace()
+            {
+                LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid ?,
+                Level = LogLevel.Debug,
+                Message = "Application.GameService.GetGameById",
+                StackTrace = gameFound.ToString()
+            });
 
             return gameFound.ToResponse();
         }
