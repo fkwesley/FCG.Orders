@@ -33,7 +33,10 @@ namespace FCG.Application.Services
         {
             var gameFound = _gameRepository.GetGameById(id);
 
-            _loggerService.LogTraceAsync(new Trace()
+            using var scope = _scopeFactory.CreateScope();
+            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
+
+            loggerService.LogTraceAsync(new Trace()
             {
                 LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid ?,
                 Level = LogLevel.Debug,
