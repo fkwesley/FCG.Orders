@@ -43,13 +43,13 @@ jobs:
       
       - name: Build Docker image
         run: |
-            docker build -t acrfcg.azurecr.io/fiapcloudOrders/orders/api:latest \
-                         -t acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ steps.set_tag.outputs.image_tag }} .
+            docker build -t acrfcg.azurecr.io/fiapcloudgames/orders/api:latest \
+                         -t acrfcg.azurecr.io/fiapcloudgames/orders/api:${{ steps.set_tag.outputs.image_tag }} .
 
       - name: Push Docker image to ACR
         run: |
-            docker push acrfcg.azurecr.io/fiapcloudOrders/orders/api:latest
-            docker push acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ steps.set_tag.outputs.image_tag }}
+            docker push acrfcg.azurecr.io/fiapcloudgames/orders/api:latest
+            docker push acrfcg.azurecr.io/fiapcloudgames/orders/api:${{ steps.set_tag.outputs.image_tag }}
 
   deploy-dev:
     needs: build-test-pushDockerImage
@@ -67,7 +67,7 @@ jobs:
           az containerapp update \
             --name aca-fcg-orders-dev \
             --resource-group RG_FCG \
-            --image acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
+            --image acrfcg.azurecr.io/fiapcloudgames/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FCGOrdersDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
@@ -97,7 +97,7 @@ jobs:
           az containerapp update \
             --name aca-fcg-orders-uat \
             --resource-group RG_FCG \
-            --image acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
+            --image acrfcg.azurecr.io/fiapcloudgames/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FCGOrdersDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
@@ -129,7 +129,7 @@ jobs:
           az containerapp update \
             --name aca-fcg-orders \
             --resource-group RG_FCG \
-            --image acrfcg.azurecr.io/fiapcloudOrders/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
+            --image acrfcg.azurecr.io/fiapcloudgames/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FCGOrdersDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
