@@ -1,7 +1,11 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
+using Domain.Enums;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -13,13 +17,17 @@ namespace Infrastructure.Repositories
         private readonly string _endpoint;
         private readonly string _subscriptionKey;
         private readonly string _authorizationToken;
+        private readonly ILoggerService _loggerService;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public GameRepository(HttpClient httpClient, IConfiguration configuration)
+        public GameRepository(HttpClient httpClient, IConfiguration configuration, ILoggerService loggerService, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
             _endpoint = configuration["GamesAPI:EndPoint"];
             _subscriptionKey = configuration["GamesAPI:OcpApimSubscriptionKey"];
             _authorizationToken = configuration["GamesAPI:Authorization"];
+            _loggerService = loggerService;
+            _httpContext = httpContextAccessor;
         }
 
         public Game GetGameById(int id)
@@ -29,6 +37,14 @@ namespace Infrastructure.Repositories
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _authorizationToken);
 
             var response = _httpClient.Send(request);
+
+            _loggerService.LogTraceAsync(new Trace()
+            {
+                LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
+                Level = LogLevel.Debug,
+                Message = "Infra.GameRepository.GetGameById",
+                StackTrace = string.Format("StatusCode = {0} - Content = {1} ",response.StatusCode, response.Content)
+            });
 
             if (response.StatusCode == HttpStatusCode.OK)
             {

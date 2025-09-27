@@ -142,7 +142,14 @@ builder.Services.AddScoped<INewRelicLoggerRepository, NewRelicLoggerRepository>(
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<OrdersDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null
+        );
+    });
 }, ServiceLifetime.Scoped);
 #endregion
 
