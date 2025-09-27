@@ -5,6 +5,7 @@ using Application.Mappings;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using FCG.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
@@ -15,18 +16,21 @@ namespace Application.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly ILoggerService _loggerService;
+        private readonly IGameService _gameService;
         private readonly IHttpContextAccessor _httpContext;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public OrderService(
                 IOrderRepository orderRepository, 
                 ILoggerService loggerService,
+                IGameService gameService,
                 IHttpContextAccessor httpContext,
                 IServiceScopeFactory scopeFactory)
         {
             _orderRepository = orderRepository
                 ?? throw new ArgumentNullException(nameof(orderRepository));
             _loggerService = loggerService;
+            _gameService = gameService;
             _httpContext = httpContext;
             _scopeFactory = scopeFactory;
         }
@@ -67,7 +71,22 @@ namespace Application.Services
                 throw new ValidationException(string.Format("There is already an active order for the user {0} with one or more of the games requested.", order.UserId.ToUpper()));
 
             var orderEntity = order.ToEntity();
+
+            //verifying if all games exists and getting their prices
+            foreach (var game in orderEntity.ListOfGames)
+            {
+                var existingGame = _gameService.GetGameById(game.GameId);
+
+                if (existingGame == null)
+                    throw new ValidationException(string.Format("Game with id {0} is not available.", game.GameId));
+
+                game.Price = existingGame.Price;
+                game.Name = existingGame.Name;
+            }
+            
             var orderAdded = _orderRepository.AddOrder(orderEntity);
+
+            //publishing payment event to the queue
 
             return orderAdded.ToResponse();
         }

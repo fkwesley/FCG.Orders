@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-    branches:
-      - '**'
+  # pull_request:
+  #   branches:
+  #     - '*'
 
 jobs:
   build-test-pushDockerImage:
@@ -74,6 +74,9 @@ jobs:
                 "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
                 "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
+                "GamesAPI__EndPoint=${{ vars.GAMES_API_ENDPOINT }}" \
+                "GamesAPI__OcpApimSubscriptionKey=${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}" \
+                "GamesAPI__Authorization=${{ secrets.GAMES_API_AUTH_TOKEN }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
 
   deploy-uat:
@@ -101,6 +104,9 @@ jobs:
                 "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
                 "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
+                "GamesAPI__EndPoint=${{ vars.GAMES_API_ENDPOINT }}" \
+                "GamesAPI__OcpApimSubscriptionKey=${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}" \
+                "GamesAPI__Authorization=${{ secrets.GAMES_API_AUTH_TOKEN }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
 
   deploy-prd:
@@ -130,5 +136,8 @@ jobs:
                 "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
                 "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
+                "GamesAPI__EndPoint=${{ vars.GAMES_API_ENDPOINT }}" \
+                "GamesAPI__OcpApimSubscriptionKey=${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}" \
+                "GamesAPI__Authorization=${{ secrets.GAMES_API_AUTH_TOKEN }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
 

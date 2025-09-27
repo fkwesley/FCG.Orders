@@ -1,10 +1,11 @@
-using Azure;
 using API.Middlewares;
 using API.Models;
 using Application.Interfaces;
 using Application.Services;
 using Application.Settings;
+using Azure;
 using Domain.Repositories;
+using FCG.Application.Services;
 using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -130,9 +131,11 @@ builder.Services.AddSingleton<IPasswordHasherRepository, PasswordHasherRepositor
 //services
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ILoggerService, LoggerService>();
+builder.Services.AddScoped<IGameService, GameService>();
 
 //repositories
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ILoggerRepository, LoggerRepository>();
 builder.Services.AddScoped<INewRelicLoggerRepository, NewRelicLoggerRepository>();
 
@@ -144,6 +147,7 @@ builder.Services.AddDbContext<OrdersDbContext>(options =>
 #endregion
 
 #region otherServices
+builder.Services.AddHttpClient(); // Registra o HttpClient para chamadas HTTP
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();

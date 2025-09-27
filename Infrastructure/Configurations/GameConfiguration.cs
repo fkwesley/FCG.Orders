@@ -22,6 +22,8 @@ namespace FCG.Infrastructure.Configurations
                        .WithMany(o => o.ListOfGames)       // Uma Order pode ter vários Games
                        .HasForeignKey(g => g.OrderId)      // OrderId é a FK em Game
                        .OnDelete(DeleteBehavior.Restrict); // Evita delete em cascata
+
+            builder.Ignore(g => g.Name);
         }
     }
 }

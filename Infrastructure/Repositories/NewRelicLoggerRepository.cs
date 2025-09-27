@@ -15,9 +15,9 @@ namespace Infrastructure.Repositories
         private readonly string _licenseKey;
         private readonly string _endpoint;
 
-        public NewRelicLoggerRepository(IConfiguration configuration)
+        public NewRelicLoggerRepository(HttpClient httpClient, IConfiguration configuration)
         {
-            _httpClient = new HttpClient();
+            _httpClient = httpClient;
             
             _licenseKey = configuration["NewRelic:LicenseKey"]
                 ?? throw new ArgumentNullException("NewRelic:LicenseKey not configured");

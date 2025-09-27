@@ -50,7 +50,7 @@ namespace Application.Mappings
                 ListOfGames = entity.ListOfGames.Select(game => new GameResponse
                 {
                     GameId = game.GameId,
-                    Title = string.Empty, // Adjust as needed
+                    Name = game.Name,
                     Price = game.Price
                 }).ToList(),
                 TotalPrice = entity.TotalPrice,
