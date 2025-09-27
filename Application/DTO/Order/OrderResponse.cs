@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTO.Game;
+using Domain.Entities;
 using Domain.Enums;
 using Domain.ValueObjects;
 
@@ -8,10 +9,9 @@ namespace Application.DTO.Order
     {
         public int OrderId { get; set; }
         public required string UserId { get; set; }
-        public IEnumerable<Game> ListOfGames { get; set; } = new List<Game>(); 
+        public IEnumerable<GameResponse> ListOfGames { get; set; } = new List<GameResponse>(); 
         public required OrderStatus Status { get; set; }
         public required PaymentMethod PaymentMethod { get; set; }
-        public PaymentMethodDetails? PaymentMethodDetails { get; set; } = null;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public double TotalPrice { get; set; }

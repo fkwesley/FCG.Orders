@@ -49,19 +49,18 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Game",
+                name: "Order_game",
                 columns: table => new
                 {
-                    GameId = table.Column<int>(type: "INT", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "INT", nullable: true),
+                    GameId = table.Column<int>(type: "INT", nullable: false),
+                    OrderId = table.Column<int>(type: "INT", nullable: false),
                     Price = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Game", x => x.GameId);
+                    table.PrimaryKey("PK_Order_game", x => new { x.OrderId, x.GameId });
                     table.ForeignKey(
-                        name: "FK_Game_Order_OrderId",
+                        name: "FK_Order_game_Order_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Order",
                         principalColumn: "OrderId",
@@ -92,11 +91,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Game_OrderId",
-                table: "Game",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Trace_log_LogId",
                 table: "Trace_log",
                 column: "LogId");
@@ -106,7 +100,7 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Game");
+                name: "Order_game");
 
             migrationBuilder.DropTable(
                 name: "Trace_log");

@@ -1,11 +1,13 @@
 ﻿using Domain.Enums;
 using Domain.Exceptions;
 using Domain.ValueObjects;
+using System.Diagnostics;
 
 namespace Domain.Entities
 {
     public class Order
     {
+        [DebuggerDisplay("OrderId: {OrderId}, UserId: {UserId}, ListOfGames: {ListOfGames.Count}, Status: {Status}")]
         public int OrderId { get; set; }
         public required string UserId { get; set; }
         public ICollection<Game> ListOfGames { get; set; } = new List<Game>(); // Propriedade de navegação para os jogos selecionados

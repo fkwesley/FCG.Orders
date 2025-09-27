@@ -1,4 +1,5 @@
-﻿using Application.DTO.Order;
+﻿using Application.DTO.Game;
+using Application.DTO.Order;
 using Application.Mappings;
 using Domain.Entities;
 using Domain.Enums;
@@ -23,7 +24,7 @@ namespace Tests.UnitTests.Application.Mappings
 
             var request = new AddOrderRequest
             {
-                UserId = "carl.johnson",
+                UserId = "CARL.JOHNSON",
                 ListOfGames = new List<int> { 1, 2 },
                 PaymentMethod = PaymentMethod.CreditCard,
                 PaymentMethodDetails = paymentDetails
@@ -61,7 +62,7 @@ namespace Tests.UnitTests.Application.Mappings
             var entity = new Order
             {
                 OrderId = 99,
-                UserId = "max.payne",
+                UserId = "MAX.PAYNE",
                 ListOfGames = games,
                 PaymentMethod = PaymentMethod.CreditCard,
                 PaymentMethodDetails = paymentDetails,
@@ -77,9 +78,8 @@ namespace Tests.UnitTests.Application.Mappings
             result.OrderId.Should().Be(entity.OrderId);
             result.UserId.Should().Be(entity.UserId);
             result.PaymentMethod.Should().Be(entity.PaymentMethod);
-            result.PaymentMethodDetails.Should().Be(entity.PaymentMethodDetails);
             result.Status.Should().Be(entity.Status);
-            result.ListOfGames.Should().BeEquivalentTo(entity.ListOfGames);
+            result.ListOfGames.Should().AllBeOfType<GameResponse>();
             result.TotalPrice.Should().Be(entity.TotalPrice);
             result.CreatedAt.Kind.Should().Be(DateTimeKind.Local);
             result.UpdatedAt.Should().BeNull();

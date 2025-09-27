@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(OrdersDbContext))]
-    [Migration("20250927024531_migration_1")]
+    [Migration("20250927032135_migration_1")]
     partial class migration_1
     {
         /// <inheritdoc />
@@ -27,23 +27,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Game", b =>
                 {
-                    b.Property<int>("GameId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("OrderId")
                         .HasColumnType("INT");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
-
-                    b.Property<int?>("OrderId")
+                    b.Property<int>("GameId")
                         .HasColumnType("INT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("DECIMAL(18,2)");
 
-                    b.HasKey("GameId");
+                    b.HasKey("OrderId", "GameId");
 
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("Game", (string)null);
+                    b.ToTable("Order_game", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
@@ -164,7 +159,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Order", "Order")
                         .WithMany("ListOfGames")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Order");
                 });

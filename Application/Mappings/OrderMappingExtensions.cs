@@ -2,12 +2,13 @@
 using Domain.Entities;
 using Application.Helpers;
 using Domain.Enums;
+using Application.DTO.Game;
 
 namespace Application.Mappings
 {
     public static class OrderMappingExtensions
     {
-        /// <summary>   
+        /// <summary>
         /// Maps a AddOrderRequest to a Order entity.
         public static Order ToEntity(this AddOrderRequest request)
         {
@@ -21,7 +22,7 @@ namespace Application.Mappings
             };
         }
 
-        /// <summary>   
+        /// <summary>
         /// Maps a UpdateOrderRequest to a Order entity.
         public static Order ToEntity(this UpdateOrderRequest request)
         {
@@ -37,7 +38,7 @@ namespace Application.Mappings
         }
 
         /// <summary>
-        /// maps a Order entity to a OrderResponse.
+        /// Maps a Order entity to a OrderResponse.
         public static OrderResponse ToResponse(this Order entity)
         {
             return new OrderResponse
@@ -45,12 +46,16 @@ namespace Application.Mappings
                 OrderId = entity.OrderId,
                 UserId = entity.UserId.ToUpper(),
                 PaymentMethod = entity.PaymentMethod,
-                PaymentMethodDetails = entity.PaymentMethodDetails,
                 Status = entity.Status,
-                ListOfGames = entity.ListOfGames,
+                ListOfGames = entity.ListOfGames.Select(game => new GameResponse
+                {
+                    GameId = game.GameId,
+                    Title = string.Empty, // Adjust as needed
+                    Price = game.Price
+                }).ToList(),
                 TotalPrice = entity.TotalPrice,
                 CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "E. South America Standard Time"),
-                UpdatedAt = entity.UpdatedAt.HasValue ? 
+                UpdatedAt = entity.UpdatedAt.HasValue ?
                                 DateTimeHelper.ConvertUtcToTimeZone(entity.UpdatedAt.Value, "E. South America Standard Time") : (DateTime?)null,
             };
         }

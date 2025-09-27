@@ -1,6 +1,7 @@
-﻿using Domain.Repositories;
-using Domain.Entities;
+﻿using Domain.Entities;
+using Domain.Repositories;
 using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -15,12 +16,16 @@ namespace Infrastructure.Repositories
 
         public IEnumerable<Order> GetAllOrders()
         {
-           return _context.Orders.ToList();
+           return _context.Orders
+                            .Include(o => o.ListOfGames)
+                            .ToList();
         }
 
         public Order GetOrderById(int id)
         {
-            return _context.Orders.FirstOrDefault(g => g.OrderId == id) 
+            return _context.Orders
+                            .Include(o => o.ListOfGames)
+                            .FirstOrDefault(o => o.OrderId == id)
                 ?? throw new KeyNotFoundException($"Order with ID {id} not found.");
         }
 

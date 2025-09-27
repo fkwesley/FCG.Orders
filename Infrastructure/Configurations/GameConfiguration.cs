@@ -8,9 +8,13 @@ namespace FCG.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Game> builder)
         {
-            builder.ToTable("Game");
-            builder.HasKey(g => g.GameId);
-            builder.Property(g => g.GameId).ValueGeneratedOnAdd().HasColumnType("INT");
+            builder.ToTable("Order_game");
+
+            // Define a chave primária composta
+            builder.HasKey(g => new { g.OrderId, g.GameId });
+
+            builder.Property(g => g.GameId).IsRequired().HasColumnType("INT");
+            builder.Property(g => g.OrderId).IsRequired().HasColumnType("INT");
 
             builder.Property(g => g.Price).IsRequired().HasColumnType("DECIMAL(18,2)");
 
