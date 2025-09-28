@@ -1,26 +1,26 @@
-﻿using Application.Services;
-using Application.Settings;
+﻿using Application.Settings;
 using Domain.Entities;
 using Domain.Enums;
-using Domain.Repositories;
 using Infrastructure.Repositories;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
+using Infrastructure.Services;
+using Infrastructure.Interfaces;
 
 namespace Tests.UnitTests.FCG.Tests.Application.Services
 {
     public class LoggerServiceTests
     {
-        private readonly Mock<ILoggerRepository> _loggerRepoMock;
+        private readonly Mock<IDatabaseLoggerRepository> _loggerRepoMock;
         private readonly Mock<INewRelicLoggerRepository> _newRelicLoggerMock;
         private readonly Mock<IOptions<ExternalLoggerSettings>> _externalLoggerSettingsMock;
         private readonly LoggerService _loggerService;
 
         public LoggerServiceTests()
         {
-            _loggerRepoMock = new Mock<ILoggerRepository>();
+            _loggerRepoMock = new Mock<IDatabaseLoggerRepository>();
             _newRelicLoggerMock = new Mock<INewRelicLoggerRepository>();
             _externalLoggerSettingsMock = new Mock<IOptions<ExternalLoggerSettings>>();
 

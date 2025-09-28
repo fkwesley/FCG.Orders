@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
+using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;

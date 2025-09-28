@@ -45,9 +45,6 @@ namespace Infrastructure.Repositories
 
             var response = _httpClient.Send(request);
 
-            using var scope = _scopeFactory.CreateScope();
-            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
-
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var responseContent = response.Content.ReadAsStringAsync().Result;
@@ -59,6 +56,8 @@ namespace Infrastructure.Repositories
                 #pragma warning restore CS8603 // Possible null reference return.
             }
 
+            using var scope = _scopeFactory.CreateScope();
+            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
             loggerService.LogTraceAsync(new Trace()
             {
                 LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,

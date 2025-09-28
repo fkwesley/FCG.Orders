@@ -1,8 +1,8 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Repositories
+namespace Infrastructure.Interfaces
 {
-    public interface ILoggerRepository
+    public interface IDatabaseLoggerRepository
     {
         Task LogTraceAsync(Trace log);
         Task LogRequestAsync(RequestLog log);
