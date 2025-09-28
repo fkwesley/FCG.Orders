@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - '**'
-  # pull_request:
-  #   branches:
-  #     - '*'
 
 jobs:
   build-test-pushDockerImage:
@@ -70,6 +67,7 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/orders/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FCGOrdersDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
+                "ConnectionStrings__FCGServiceBusConnection=${{ secrets.FCG_SERVICEBUS_CONNECTION_STRING }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
                 "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
