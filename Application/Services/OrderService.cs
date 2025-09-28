@@ -5,6 +5,7 @@ using Application.Mappings;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Repositories;
+using Domain.ValueObjects;
 using FCG.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,13 +20,15 @@ namespace Application.Services
         private readonly IGameService _gameService;
         private readonly IHttpContextAccessor _httpContext;
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IServiceBusPublisher _serviceBusPublisher;
 
         public OrderService(
                 IOrderRepository orderRepository, 
                 ILoggerService loggerService,
                 IGameService gameService,
                 IHttpContextAccessor httpContext,
-                IServiceScopeFactory scopeFactory)
+                IServiceScopeFactory scopeFactory,
+                IServiceBusPublisher serviceBusPublisher)
         {
             _orderRepository = orderRepository
                 ?? throw new ArgumentNullException(nameof(orderRepository));
@@ -33,6 +36,7 @@ namespace Application.Services
             _gameService = gameService;
             _httpContext = httpContext;
             _scopeFactory = scopeFactory;
+            _serviceBusPublisher = serviceBusPublisher;
         }
 
         public async Task<IEnumerable<OrderResponse>> GetAllOrdersAsync()
@@ -86,7 +90,21 @@ namespace Application.Services
             
             var orderAdded = _orderRepository.AddOrder(orderEntity);
 
-            //publishing payment event to the queue
+            // Publishing payment event to the queue on Azure Service Bus
+            _serviceBusPublisher.PublishMessageAsync(
+                topicName: "fcg.paymentstopic", 
+                message: new 
+                {
+                    OrderId = orderAdded.OrderId,   
+                    TotalPrice = orderAdded.TotalPrice,
+                    CreatedAt = orderAdded.CreatedAt,
+                    PaymentMethod = orderAdded.PaymentMethod,
+                    PaymentMethodDetails = order.PaymentMethodDetails
+                }, 
+                customProperties: new Dictionary<string, object>
+                {
+                    {"PaymentMethod", orderAdded.PaymentMethod.ToString() }
+                });
 
             return orderAdded.ToResponse();
         }

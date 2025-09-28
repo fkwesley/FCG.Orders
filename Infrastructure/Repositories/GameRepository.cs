@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -46,25 +45,26 @@ namespace Infrastructure.Repositories
 
             var response = _httpClient.Send(request);
 
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var responseContent = response.Content.ReadAsStringAsync().Result;
+                #pragma warning disable CS8603 // Possible null reference return.
+                return JsonSerializer.Deserialize<Game>(responseContent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                #pragma warning restore CS8603 // Possible null reference return.
+            }
+
             using var scope = _scopeFactory.CreateScope();
             var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
-
             loggerService.LogTraceAsync(new Trace()
             {
                 LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
                 Level = LogLevel.Debug,
                 Message = "Infra.GameRepository.GetGameById",
-                StackTrace = string.Format("StatusCode = {0} - Content = {1} ",response.StatusCode, response.Content.ReadAsStringAsync())
+                StackTrace = string.Format("StatusCode = {0} - Content = {1} ", response.StatusCode, response.Content.ReadAsStringAsync().Result)
             });
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var responseContent = response.Content.ReadAsStringAsync().Result;
-                return JsonSerializer.Deserialize<Game>(responseContent, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-            }
 
             return null;
         }

@@ -7,7 +7,9 @@ using Azure;
 using Domain.Repositories;
 using FCG.Application.Services;
 using Infrastructure.Context;
+using Infrastructure.Interfaces;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -125,19 +127,20 @@ builder.Services.AddSwaggerGen(c =>
 #endregion
 
 #region dependencyInjection
-// Dependency Injection for Application Layer
-builder.Services.AddSingleton<IPasswordHasherRepository, PasswordHasherRepository>();
-
-//services
+//domain services
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<ILoggerService, LoggerService>();
 builder.Services.AddScoped<IGameService, GameService>();
+
+//infra services
+builder.Services.AddScoped<ILoggerService, LoggerService>();
+builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
 
 //repositories
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<ILoggerRepository, LoggerRepository>();
+builder.Services.AddScoped<IDatabaseLoggerRepository, DatabaseLoggerRepository>();
 builder.Services.AddScoped<INewRelicLoggerRepository, NewRelicLoggerRepository>();
+
 
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<OrdersDbContext>(options =>

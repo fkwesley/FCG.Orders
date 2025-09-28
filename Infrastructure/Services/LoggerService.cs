@@ -2,23 +2,20 @@
 using Application.Settings;
 using Domain.Entities;
 using Domain.Enums;
-using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
+using Infrastructure.Interfaces;
 using Microsoft.Extensions.Options;
-using System.Diagnostics;
-using System.Net.Http;
 using Trace = Domain.Entities.Trace;
 
-namespace Application.Services
+namespace Infrastructure.Services
 {
     public class LoggerService : ILoggerService
     {
-        private readonly ILoggerRepository _loggerRepository;
+        private readonly IDatabaseLoggerRepository _loggerRepository;
         private readonly INewRelicLoggerRepository _newRelicLoggerRepository;
         private readonly bool _externalLoggerEnabled;
 
         public LoggerService(
-            ILoggerRepository loggerRepository,
+            IDatabaseLoggerRepository loggerRepository,
             INewRelicLoggerRepository newRelicLoggerRepository,
             IOptions<ExternalLoggerSettings> externalLogger)
         {

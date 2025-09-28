@@ -1,15 +1,15 @@
 ﻿using Domain.Entities;
-using Domain.Repositories;
 using Infrastructure.Context;
+using Infrastructure.Interfaces;
 
 namespace Infrastructure.Repositories
 {
-    public class LoggerRepository : ILoggerRepository
+    public class DatabaseLoggerRepository : IDatabaseLoggerRepository
     {
         private readonly OrdersDbContext _context;
 
         // Injeta o DbContext via construtor
-        public LoggerRepository(OrdersDbContext context)
+        public DatabaseLoggerRepository(OrdersDbContext context)
         {
             _context = context;
         }
