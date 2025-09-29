@@ -47,7 +47,7 @@ namespace Domain.Entities
             get => _paymentMethodDetails;
             set
             { 
-                if (PaymentMethod != PaymentMethod.Pix && PaymentMethodDetails == null)
+                if (PaymentMethod != PaymentMethod.Pix && value == null)
                     throw new BusinessException("Payment method details are required for credit or debit card payments.");
 
                 _paymentMethodDetails = value;
