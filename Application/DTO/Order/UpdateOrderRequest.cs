@@ -7,10 +7,9 @@ namespace Application.DTO.Order
     public class UpdateOrderRequest
     {
         [JsonIgnore]
-        public required int OrderId { get; set; }
-        public required string UserId { get; set; }
-        public IEnumerable<int> ListOfGames { get; set; } = new List<int>();
-        public PaymentMethod PaymentMethod { get; set; }
-        public PaymentMethodDetails? PaymentMethodDetails { get; set; }
+        public int OrderId { get; set; }
+        [JsonIgnore]
+        public string? UserId { get; set; }
+        public required OrderStatus Status { get; set; }
     }
 }

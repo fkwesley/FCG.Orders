@@ -16,7 +16,11 @@ namespace FCG.Infrastructure.Configurations
                    .HasMaxLength(20)
                    .IsRequired(true);
 
-            builder.Property(o => o.Status).IsRequired().HasColumnType("INT");
+            builder.Property(o => o.Status)
+                   .HasField("_status") // mapping the private field
+                   .IsRequired()
+                   .HasColumnType("INT");
+
             builder.Property(o => o.PaymentMethod).IsRequired().HasColumnType("INT");
 
             builder.Property(o => o.CreatedAt)

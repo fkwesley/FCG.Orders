@@ -29,11 +29,9 @@ namespace Application.Mappings
             return new Order
             {
                 OrderId = request.OrderId,
-                PaymentMethod = request.PaymentMethod,
-                Status = OrderStatus.PendingPayment,
+                Status = request.Status,
                 UserId = request.UserId.ToUpper(),
-                PaymentMethodDetails = request.PaymentMethodDetails,
-                ListOfGames = request.ListOfGames.Select(id => new Game { GameId = id }).ToList()
+                PaymentMethod = PaymentMethod.Pix // Default value, as it's not provided in the update request
             };
         }
 

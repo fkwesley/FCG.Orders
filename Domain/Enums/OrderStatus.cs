@@ -8,7 +8,7 @@ namespace Domain.Enums
         PendingPayment, // Aguardando pagamento
         PaymentFailed,  // Pagamento falhou
         Paid,           // Pagamento realizado
-        Processing,     // Pedido em processamento
+        Processing,     // Pedido em processamento de liberação
         Released,       // Pedido liberado para download ou uso
         Cancelled,      // Pedido cancelado pelo usuário ou sistema
         Refunded        // Pedido reembolsado
