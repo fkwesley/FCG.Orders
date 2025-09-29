@@ -25,6 +25,8 @@ namespace API.Controllers
         /// <returns>List of Orders</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll()
@@ -56,9 +58,14 @@ namespace API.Controllers
         [HttpPost(Name = "Order")]
         [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Add([FromBody] AddOrderRequest orderRequest)
         {
+            // getting user_id from context (provided by token)
+            orderRequest.UserId = HttpContext.User?.FindFirst("user_id")?.Value;
+
             var createdOrder = _orderService.AddOrder(orderRequest);
             return CreatedAtAction(nameof(GetById), new { id = createdOrder.OrderId }, createdOrder);
         }
@@ -72,11 +79,16 @@ namespace API.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Update(int id, [FromBody] UpdateOrderRequest orderRequest)
         {
-            orderRequest.OrderId = id; 
+            orderRequest.OrderId = id;
+
+            // getting user_id from context (provided by token)
+            orderRequest.UserId = HttpContext.User?.FindFirst("user_id")?.Value;
 
             var updated = _orderService.UpdateOrder(orderRequest);
             return Ok(updated);
@@ -90,6 +102,8 @@ namespace API.Controllers
         /// <returns>No content</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Delete(int id)

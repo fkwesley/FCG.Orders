@@ -42,9 +42,8 @@ namespace Infrastructure.Repositories
 
             if (existingOrder != null) {
                 existingOrder.Status = order.Status;
-                existingOrder.PaymentMethod = order.PaymentMethod;
-                existingOrder.PaymentMethodDetails = order.PaymentMethodDetails;
-                
+                existingOrder.UpdatedAt = DateTime.UtcNow;
+
                 _context.Orders.Update(existingOrder);
                 _context.SaveChanges();
             }
@@ -60,6 +59,7 @@ namespace Infrastructure.Repositories
 
             if (game != null)
             {
+                _context.Games.RemoveRange(game.ListOfGames); // Remove associated games first
                 _context.Orders.Remove(game);
                 _context.SaveChanges();
                 return true;
