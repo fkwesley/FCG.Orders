@@ -17,8 +17,8 @@ namespace Domain.Entities
             get => _status;
             set
             {
-                if (_status == OrderStatus.Paid)
-                    throw new BusinessException("Cannot change the status of an order that is already paid.");
+                if (_status == OrderStatus.Released)
+                    throw new BusinessException("Cannot change the status of an order that is already released.");
 
                 _status = value;
             }
