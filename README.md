@@ -1,9 +1,10 @@
-﻿# 🎮 FCG.FiapCloudGames.API
+﻿# 🎮 FCG.Orders.API
 
-API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados.
+API desenvolvida para gerenciamento de pedidos, com foco em micro-serviços e arquitetura orientada a eventos.
 - Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
 - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
 - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
+- [Vídeo com a apresentação da Fase 3]()
 
 ## 📌 Objetivo
 
@@ -36,6 +37,14 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
     - Traces no New Relic
     - Logs no New Relic
     - Dashboards de monitoramento (New Relic e Azure)
+### **Fase 3:**
+  - **Migração arquitetura Monolitica x Micro-serviços:**
+    - Separação da API em dois serviços distintos com base nos contextos delimitados (Users, Games, Orders, Payments)
+    - Cada API com seu próprio repositório e infraestrutura (banco de dados, container app e pipeline CI/CD)
+  - **Adoção de soluções Serverless:**
+    - Integração de Message broker (Azure Service Bus) para comunicação assíncrona entre serviços
+    - Utilização de Azure Functions como gatilho para as mensagens do Service Bus (Tópicos e Subscriptions)
+    - Utilização do Azure API Management para gerenciamento e segurança das APIs com políticas de rate limiting e caching
 
 
 ## 🚀 Tecnologias Utilizadas
@@ -45,7 +54,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | .NET              | .NET 8                           |
 | C#                | 12                               |
 | Entity Framework  | Core, com Migrations             |
-| Banco de Dados    | SQL Server (ou SQLite para testes) |
+| Banco de Dados    | SQL Server                       |
 | Autenticação      | JWT (Bearer Token)               |
 | Testes            | xUnit, Moq, FluentAssertions     |
 | Swagger           | Swashbuckle.AspNetCore           |
@@ -66,20 +75,11 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 
 ## ✅ Principais Funcionalidades
 
-### Usuários
-- ✅ Criação de usuários
-- ✅ Autenticação com JWT
-- ✅ Hash seguro de senhas com salt
-- ✅ Verificação de senha no login
-- ✅ Validação de senha forte
-- ✅ Validação de formato de e-mail
-- ✅ Controle de permissões (admin)
-
-### Jogos
-- ✅ Cadastro e listagem de jogos
-- ✅ Validação de campos e tamanho máximo
-- ✅ Validação de gênero permitido
-- ✅ Validação de quantidade mínima de dados enviados
+### Pedidos
+- ✅ Criação de pedidos e disparo para fila de pagamento de forma assíncrona
+- ✅ Listagem de pedidos
+- ✅ Atualização de pedidos
+- ✅ Cancelamento de pedidos
 
 ### Segurança e Middleware
 - ✅ Middleware de erro global
@@ -87,14 +87,9 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - ✅ Registro de logs com `RequestId` único
 - ✅ Token JWT com verificação de permissões por endpoint
 
-
 ## 🧪 Testes
 
-- ✅ Testes unitários completos de:
-  - Regras de domínio
-  - Hash de senhas
-  - Autenticação
-  - Serviços e repositórios mockados
+- ✅ Testes unitários completos
 - ✅ Cobertura de cenários felizes e inválidos
 - ✅ Testes de carga e performance (utilizando K6)
   ```bash
@@ -113,7 +108,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
 ### 
 - Clonar o repositório
   ```bash
-  git clone https://github.com/seu-usuario/fiap-cloud-games.git
+  git clone https://github.com/fkwesley/FCG.Orders.git
   ```
 - Configurar a conexão com o banco de dados no `appsettings.json` ou nas variáveis de ambiente
   ```json
@@ -154,12 +149,12 @@ Siga esses passos para configurar e rodar o projeto localmente:
  ```bash
 FCG.FiapCloudGames/
 │
-├── FCG.API/                        # Camada de apresentação (Controllers, Middlewares, Program.cs)
+├── API/                        # Camada de apresentação (Controllers, Middlewares, Program.cs)
 │   ├── Controllers/                # Endpoints REST
 │   ├── Middleware/                 # Tratamento de erros, logs, etc.
 │   └── Program.cs                  # Ponto de entrada da aplicação
 │
-├── FCG.Application/                # Camada de aplicação (DTOs, serviços, interfaces de uso)
+├── Application/                # Camada de aplicação (DTOs, serviços, interfaces de uso)
 │   ├── Interfaces/                 # Interfaces usadas pela API
 │   ├── Services/                   # Serviços que coordenam o domínio
 │   └── DTOs/                       # Objetos de transferência de dados
@@ -168,59 +163,58 @@ FCG.FiapCloudGames/
 │   └── Mappings/                   # Mapeamentos entre DTOs e entidades
 │   └── Settings/                   # Configurações da aplicação
 │
-├── FCG.Domain/                     # Camada de domínio (regra de negócio, entidades, contratos)
+├── Domain/                     # Camada de domínio (regra de negócio, entidades, contratos)
 │   ├── Entities/                   # Entidades como User e Game
 │   ├── Exceptions/                 # Exceções do domínio
 │   ├── Repositories/               # Interfaces dos repositórios (sem dependência de EF)
 │
-├── FCG.Infrastructure/             # Implementações (EF, hashing, repositórios concretos)
+├── Infrastructure/             # Implementações (EF, hashing, repositórios concretos)
 │   ├── Context/                    # DbContext do Entity Framework
 │   ├── Mappings/                   # Configurações de entidades (Fluent API)
 │   ├── Repositories/               # Repositórios que implementam a camada de domínio
 │   └── Migrations/                 # Histórico de migrations geradas
 │
-├── FCG.Tests/                      # Testes automatizados (xUnit)
+├── Tests/                      # Testes automatizados (xUnit)
 │   ├── UnitTests/                  # Testes Unitários
 │       ├── Domain/                 # Testes de entidades, regex e regras
 │       ├── Application/            # Testes de serviços (ex: UserService)
 │       ├── Infrastructure/         # Testes de hashing, token, etc.
 │       └── Helpers/                # Setup de mocks e objetos fake
-│   ├── IntegrationTests/           # Testes de Integração
 │
-├── FCG.Documentation/              # Documentação do projeto
+├── Documentation/              # Documentação do projeto
 ├── .github/                        # Configurações do GitHub Actions para CI/CD
 │
-├── .gitattributes                  # Configurações do Git
-├── .gitigore                       # Arquivo para ignorar arquivos no Git
-├── load-test.js                    # Script de teste de carga com K6
-├── Dockerfile                      # Dockerfile para containerização
-├── README.md                       # Este arquivo
+├── .gitattributes              # Configurações do Git
+├── .gitigore                   # Arquivo para ignorar arquivos no Git
+├── load-test.js                # Script de teste de carga com K6
+├── Dockerfile                  # Dockerfile para containerização
+├── README.md                   # Este arquivo
 └── 
  ```
 
 
 ## 🔗 Diagrama de Relacionamento (Simplificado)
 ```plaintext
-+------------------+           +--------------------+           +------------------+            +------------------+
-|     Users        |<--------->|   Request_log      |<--------->|    Trace_log     |            |      Games       |
-+------------------+   (1:N)   +--------------------+   (1:N)   +------------------+            +------------------+
-| UserId (PK)      |           | LogId (PK)         |           | TraceId (PK)     |            | GameId (PK)      |
-| Name             |           | UserId (FK)        |           | LogId (FK)       |            | Name             |
-| Email            |           | HttpMethod         |           | Timestamp        |            | Description      |
-| PasswordHash     |           | Path               |           | Level            |            | Genre            |
-| IsActive         |           | StatusCode         |           | Message          |            | ReleaseDate      |
-| CreatedAt        |           | RequestBody        |           | StackTrace       |            | CreatedAt        |
-| UpdatedAt        |           | ResponseBody       |           +------------------+            | UpdatedAt        |
-| IsAdmin          |           | StartDate          |                                           | Rating           |
-+------------------+           | EndDate            |                                           +------------------+ 
-                               | Duration           |
-                               +--------------------+       
++--------------------+           +------------------+      +------------------+            +------------------+
+|   Request_log      |<--------->|    Trace_log     |      |      Order       |<---------> |    Order_game    |
++--------------------+   (1:N)   +------------------+      +------------------+   (1:N)    +------------------+
+| LogId (PK)         |           | TraceId (PK)     |      | OrderId (PK)     |            | GameId (PK)      |
+| UserId (FK)        |           | LogId (FK)       |      | UserId           |            | OrderId          |
+| HttpMethod         |           | Timestamp        |      | Status           |            | Price            |
+| Path               |           | Level            |      | PaymentMethod    |            +------------------+
+| StatusCode         |           | Message          |      | CreatedAt        |            
+| RequestBody        |           | StackTrace       |      | UpdatedAt        |            
+| ResponseBody       |           +------------------+      +------------------+            
+| StartDate          |                                           
+| EndDate            |                                            
+| Duration           |
++--------------------+       
 ```
 
 
 ## 🚀 Pipeline CI/CD
 
-O workflow está definido em `.github/workflows/ci-cd-fcg.yml`. 
+O workflow está definido em `.github/workflows/ci-cd.yml`. 
 Automatizando os seguintes passos:
 
 - Build e testes unitários
@@ -237,12 +231,15 @@ Automatizando os seguintes passos:
 O projeto utiliza os seguintes recursos na Azure:
 
 - **Azure Resource Group**: `RG_FCG`
-- **Azure SQL Database**: `fiapcloudgamesdb`
+- **Azure SQL Database**: `FCG.OrdersDB`
 - **Azure Container Registry (ACR)**: `acrfcg.azurecr.io`
 - **Azure Container Apps**:
-  - DEV: `aca-fcg-dev` 
-  - UAT: `aca-fcg-uat` 
-  - PRD: `aca-fcg` 
+  - DEV: `aca-fcg-orders-dev` 
+  - UAT: `aca-fcg-orders-uat` 
+  - PRD: `aca-fcg-orders`
+- **Azure Api Management**: `apim-fcg`
+- **Azure Service Bus**: `servicebus-fcg`
+- **Azure Functions**: `func-fcg-payments`
 
 As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
 [Link para o desenho de infraestrutura](https://miro.com/app/board/uXjVIteOb6w=/?share_link_id=230805148396)

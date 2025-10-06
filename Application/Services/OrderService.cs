@@ -98,11 +98,13 @@ namespace Application.Services
                 topicName: "fcg.paymentstopic", 
                 message: new 
                 {
-                    OrderId = orderAdded.OrderId,   
-                    TotalPrice = orderAdded.TotalPrice,
-                    CreatedAt = orderAdded.CreatedAt,
-                    PaymentMethod = orderAdded.PaymentMethod,
-                    PaymentMethodDetails = order.PaymentMethodDetails
+                    orderAdded.OrderId,   
+                    orderAdded.TotalPrice,
+                    orderAdded.PaymentMethod,
+                    order.PaymentMethodDetails?.CardNumber,
+                    order.PaymentMethodDetails?.CardHolder,
+                    order.PaymentMethodDetails?.ExpiryDate,
+                    order.PaymentMethodDetails?.Cvv
                 }, 
                 customProperties: new Dictionary<string, object>
                 {
