@@ -71,7 +71,10 @@ namespace Application.Services
             var userOrders = _orderRepository.GetAllOrders().Where(o => o.UserId.Equals(order.UserId, StringComparison.OrdinalIgnoreCase));
 
             //verifying if there is any active order with some of the games requested
-            if (userOrders.Any(o => o.Status != OrderStatus.Cancelled && o.ListOfGames.Any(g => order.ListOfGames.Contains(g.GameId))))
+            if (userOrders.Any(o => o.ListOfGames.Any(g => order.ListOfGames.Contains(g.GameId))
+                                 && o.Status != OrderStatus.Cancelled 
+                                 && o.Status != OrderStatus.Released
+                                 && o.Status != OrderStatus.Refunded))
                 throw new ValidationException(string.Format("There is already an active order for the user {0} with one or more of the games requested.", order.UserId.ToUpper()));
 
             var orderEntity = order.ToEntity();
