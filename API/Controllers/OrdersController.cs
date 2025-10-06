@@ -1,6 +1,7 @@
 using API.Models;
 using Application.DTO.Order;
 using Application.Interfaces;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -83,12 +84,14 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public IActionResult Update(int id, [FromBody] UpdateOrderRequest orderRequest)
+        public IActionResult Update(int id, [FromQuery] OrderStatus orderStatus)
         {
-            orderRequest.OrderId = id;
-
-            // getting user_id from context (provided by token)
-            orderRequest.UserId = HttpContext.User?.FindFirst("user_id")?.Value;
+            var orderRequest = new UpdateOrderRequest()
+            {
+                OrderId = id,
+                UserId = HttpContext.User?.FindFirst("user_id")?.Value, // getting user_id from context (provided by token)
+                Status = orderStatus
+            };
 
             var updated = _orderService.UpdateOrder(orderRequest);
             return Ok(updated);
