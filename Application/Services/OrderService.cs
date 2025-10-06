@@ -99,7 +99,7 @@ namespace Application.Services
                 message: new 
                 {
                     orderAdded.OrderId,   
-                    orderAdded.TotalPrice,
+                    amount = orderAdded.TotalPrice,
                     orderAdded.PaymentMethod,
                     order.PaymentMethodDetails?.CardNumber,
                     order.PaymentMethodDetails?.CardHolder,
