@@ -75,7 +75,12 @@ jobs:
                 "GamesAPI__EndPoint=${{ vars.GAMES_API_ENDPOINT }}" \
                 "GamesAPI__OcpApimSubscriptionKey=${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}" \
                 "GamesAPI__Authorization=${{ secrets.GAMES_API_AUTH_TOKEN }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}"
+                "AspNetCore__Environment=${{ vars.ENV }}" \
+                "ElasticApm__ServerUrl=${{ vars.ELASTIC_APM_SERVER_URL }}" \
+                "ElasticApm__ApiKey=${{ secrets.ELASTIC_APM_API_KEY }}" \
+                "ElasticApm__Environment=${{ vars.ENV }}" \
+                "ElasticApm__ServiceName=${{ vars.ELASTIC_APM_SERVICE_NAME }}"
+
 
   deploy-uat:
     needs:
@@ -106,7 +111,11 @@ jobs:
                 "GamesAPI__EndPoint=${{ vars.GAMES_API_ENDPOINT }}" \
                 "GamesAPI__OcpApimSubscriptionKey=${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}" \
                 "GamesAPI__Authorization=${{ secrets.GAMES_API_AUTH_TOKEN }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}"
+                "AspNetCore__Environment=${{ vars.ENV }}"\
+                "ElasticApm__ServerUrl=${{ vars.ELASTIC_APM_SERVER_URL }}" \
+                "ElasticApm__ApiKey=${{ secrets.ELASTIC_APM_API_KEY }}" \
+                "ElasticApm__Environment=${{ vars.ENV }}" \
+                "ElasticApm__ServiceName=${{ vars.ELASTIC_APM_SERVICE_NAME }}"
 
   deploy-prd:
     needs: 
@@ -139,5 +148,9 @@ jobs:
                 "GamesAPI__EndPoint=${{ vars.GAMES_API_ENDPOINT }}" \
                 "GamesAPI__OcpApimSubscriptionKey=${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}" \
                 "GamesAPI__Authorization=${{ secrets.GAMES_API_AUTH_TOKEN }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}"
+                "AspNetCore__Environment=${{ vars.ENV }}"\
+                "ElasticApm__ServerUrl=${{ vars.ELASTIC_APM_SERVER_URL }}" \
+                "ElasticApm__ApiKey=${{ secrets.ELASTIC_APM_API_KEY }}" \
+                "ElasticApm__Environment=${{ vars.ENV }}" \
+                "ElasticApm__ServiceName=${{ vars.ELASTIC_APM_SERVICE_NAME }}"
 
