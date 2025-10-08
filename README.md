@@ -39,7 +39,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
     - Dashboards de monitoramento (New Relic e Azure)
 ### **Fase 3:** 
   - **Migração arquitetura Monolitica x Micro-serviços:**
-    - Separação da API em dois serviços distintos com base nos contextos delimitados (Users, Games, Orders, Payments)
+    - Separação da API em serviços distintos com base nos contextos delimitados (Users, Games, Orders, Payments)
     - Cada API com seu próprio repositório e infraestrutura (banco de dados, container app e pipeline CI/CD)
   - **Adoção de soluções Serverless:**
     - Arquitetura orientada a eventos com comunicação assíncrona via mensageria (Azure Service Bus)
