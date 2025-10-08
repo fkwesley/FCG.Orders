@@ -4,7 +4,7 @@ API desenvolvida para gerenciamento de pedidos, com foco em micro-serviços e ar
 - Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
 - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
 - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
-- [Vídeo com a apresentação da Fase 3]()
+- [Vídeo com a apresentação da Fase 3](https://youtu.be/3OxTOgieuMg)
 
 ## 📌 Objetivo
 
@@ -37,15 +37,18 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
     - Traces no New Relic
     - Logs no New Relic
     - Dashboards de monitoramento (New Relic e Azure)
-### **Fase 3:**
+### **Fase 3:** 
   - **Migração arquitetura Monolitica x Micro-serviços:**
-    - Separação da API em dois serviços distintos com base nos contextos delimitados (Users, Games, Orders, Payments)
+    - Separação da API em serviços distintos com base nos contextos delimitados (Users, Games, Orders, Payments)
     - Cada API com seu próprio repositório e infraestrutura (banco de dados, container app e pipeline CI/CD)
   - **Adoção de soluções Serverless:**
-    - Integração de Message broker (Azure Service Bus) para comunicação assíncrona entre serviços
-    - Utilização de Azure Functions como gatilho para as mensagens do Service Bus (Tópicos e Subscriptions)
-    - Utilização do Azure API Management para gerenciamento e segurança das APIs com políticas de rate limiting e caching
-
+    - Arquitetura orientada a eventos com comunicação assíncrona via mensageria (Azure Service Bus)
+    - Utilização de Azure Functions como gatilho das mensagens do Service Bus (Tópicos e Subscriptions)
+    - Utilização do Azure API Management para gerenciamento e segurança das APIs com políticas de rate limit e cache
+  - **Otimização na busca de jogos:**
+    - Implementação de ElasticSearch para indexação dos jogos e logs 
+    - Ganho de performance com consultas avançadas
+    - Implementação de filtros, paginação e ordenação, inclusive endpoint de jogos mais bem avaliados
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -62,6 +65,13 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Logger            | Middleware de Request/Response + LogId |
 | Docker            | Multi-stage Dockerfile para build e runtime |
 | Monitoramento     | New Relic (.NET Agent) + Azure |
+| Mensageria        | Azure Service Bus (Tópicos e Subscriptions) |
+| Consumer de Mensagens | Azure Functions                  |
+| Orquestração      | Azure Container Apps             |
+| API Gateway       | Azure API Management             |
+| CI/CD             | GitHub Actions                   |
+| Testes de Carga   | K6                               |
+| ElasticSearch    | Indexação e busca avançada       |
 
 
 ## 🧠 Padrões e Boas Práticas
@@ -76,16 +86,18 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 ## ✅ Principais Funcionalidades
 
 ### Pedidos
-- ✅ Criação de pedidos e disparo para fila de pagamento de forma assíncrona
+- ✅ Criação de pedidos + Disparo para fila de pagamento de forma assíncrona
 - ✅ Listagem de pedidos
-- ✅ Atualização de pedidos
+- ✅ Consulta de pedido por id
+- ✅ Atualização de status dos pedidos
 - ✅ Cancelamento de pedidos
 
 ### Segurança e Middleware
 - ✅ Middleware de erro global
 - ✅ Retorno padronizado com `ErrorResponse`
 - ✅ Registro de logs com `RequestId` único
-- ✅ Token JWT com verificação de permissões por endpoint
+- ✅ Autenticação com Token JWT gerado pela [FCG.Users.API](https://github.com/fkwesley/FCG.Users) 
+- ✅ Verificação de permissões por endpoint
 
 ## 🧪 Testes
 
@@ -110,11 +122,12 @@ Siga esses passos para configurar e rodar o projeto localmente:
   ```bash
   git clone https://github.com/fkwesley/FCG.Orders.git
   ```
-- Configurar a conexão com o banco de dados no `appsettings.json` ou nas variáveis de ambiente
+- Configurar conexões com o banco de dados e servicebus no `appsettings.json` ou nas variáveis de ambiente
   ```json
   {
     "ConnectionStrings": {
-      "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=FiapCloudGamesDb;Trusted_Connection=True;"
+      "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=FiapCloudGamesDb;Trusted_Connection=True;",
+      "ServiceBusConnection": "Endpoint=sb://<NAMESPACE>.servicebus.windows.net/;SharedAccessKeyName=<KEY_NAME>;SharedAccessKey=<KEY_VALUE>"
     },
     "Jwt": {
       "Key": "sua-chave-secreta-supersegura",
@@ -133,21 +146,21 @@ Siga esses passos para configurar e rodar o projeto localmente:
   ```
 - Executar a aplicação
   ```bash
-  dotnet run --project FCG.API
+  dotnet run --project API
   ```
 - Acessar a documentação Swagger em `http://localhost:<porta>/swagger/index.html`
 
 
  ## 🔐 Autenticação e Autorização
 
-- Faça login com um usuário existente via /auth/login
+- Faça login com um usuário existente via users/auth/login
 - Use o token Bearer retornado no header Authorization das demais requisições protegidas.
 
 
  ## 📁 Estrutura de Pastas
 
  ```bash
-FCG.FiapCloudGames/
+FCG.Orders.API/
 │
 ├── API/                        # Camada de apresentação (Controllers, Middlewares, Program.cs)
 │   ├── Controllers/                # Endpoints REST
@@ -169,10 +182,13 @@ FCG.FiapCloudGames/
 │   ├── Repositories/               # Interfaces dos repositórios (sem dependência de EF)
 │
 ├── Infrastructure/             # Implementações (EF, hashing, repositórios concretos)
+│   ├── Configurations/             # Configurações do EF (ex: SqlServerConfig)
 │   ├── Context/                    # DbContext do Entity Framework
+│   ├── Interfaces/                 # Interfaces de serviços externos
 │   ├── Mappings/                   # Configurações de entidades (Fluent API)
 │   ├── Repositories/               # Repositórios que implementam a camada de domínio
 │   └── Migrations/                 # Histórico de migrations geradas
+│   └── Services/                   # Implementações de serviços externos/infra (ex: ServiceBusService)
 │
 ├── Tests/                      # Testes automatizados (xUnit)
 │   ├── UnitTests/                  # Testes Unitários
@@ -182,7 +198,7 @@ FCG.FiapCloudGames/
 │       └── Helpers/                # Setup de mocks e objetos fake
 │
 ├── Documentation/              # Documentação do projeto
-├── .github/                        # Configurações do GitHub Actions para CI/CD
+├── .github/                    # Configurações do GitHub Actions para CI/CD
 │
 ├── .gitattributes              # Configurações do Git
 ├── .gitigore                   # Arquivo para ignorar arquivos no Git
