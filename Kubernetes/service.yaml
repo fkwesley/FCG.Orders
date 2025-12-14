@@ -1,0 +1,15 @@
+apiVersion: v1              # API para criação de Services
+kind: Service               # Tipo do objeto: Service permite acessar o Deployment
+
+metadata:
+  name: fcg-orders-svc       # Nome do Service
+
+spec:
+  type: LoadBalancer        # Tipo do Service: LoadBalancer para expor externamente
+
+  selector:
+    app: fcg-orders          # O selector conecta este Service aos Pods com este label
+
+  ports:                    # Mapeamento de portas
+    - port: 80              # Porta pública exposta no Service
+      targetPort: 8080      # Porta interna do container
