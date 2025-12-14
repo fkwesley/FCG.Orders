@@ -1,7 +1,7 @@
 
------------>> USERS
+#----------->> USERS
 
-Variáveis
+# Variáveis
 RESOURCE_GROUP="RG_FCG"
 CLUSTER_NAME="aks-fcg-users"
 LOCATION="canadacentral"
@@ -36,7 +36,7 @@ az aks create \
   --attach-acr $ACR_NAME \
   --generate-ssh-keys
 
------------>> GAMES
+#----------->> GAMES
 
 # Variáveis
 RESOURCE_GROUP="RG_FCG"
@@ -75,7 +75,7 @@ az aks create \
   --attach-acr $ACR_NAME \
   --generate-ssh-keys
 
------------>> ORDERS
+#----------->> ORDERS
 
 # Variáveis
 RESOURCE_GROUP="RG_FCG"
@@ -115,7 +115,7 @@ az aks create \
   --generate-ssh-keys
 
 
------------>> PAYMENTS
+#----------->> PAYMENTS
 
 # Variáveis
 RESOURCE_GROUP="RG_FCG"
@@ -127,6 +127,45 @@ NODE_MIN_COUNT=1
 NODE_MAX_COUNT=2
 K8S_VERSION="1.33.5"
 DNS_PREFIX="aks-fcg-payments-dns"
+NODE_OS_DISK_SIZE=128
+NODE_OS_SKU="Ubuntu"
+ACR_NAME="acrfcg"
+
+# Criação do AKS
+az aks create \
+  --resource-group $RESOURCE_GROUP \
+  --name $CLUSTER_NAME \
+  --location $LOCATION \
+  --kubernetes-version $K8S_VERSION \
+  --node-resource-group "MC_${RESOURCE_GROUP}_${CLUSTER_NAME}" \
+  --node-vm-size $NODE_VM_SIZE \
+  --node-count $NODE_COUNT \
+  --enable-cluster-autoscaler \
+  --min-count $NODE_MIN_COUNT \
+  --max-count $NODE_MAX_COUNT \
+  --enable-managed-identity \
+  --network-plugin azure \
+  --load-balancer-sku standard \
+  --dns-name-prefix $DNS_PREFIX \
+  --node-osdisk-size $NODE_OS_DISK_SIZE \
+  --enable-addons monitoring \
+  --enable-oidc-issuer \
+  --enable-workload-identity \
+  --attach-acr $ACR_NAME \
+  --generate-ssh-keys
+
+#----------->> NOTIFICATION
+
+# Variáveis
+RESOURCE_GROUP="RG_FCG"
+CLUSTER_NAME="aks-fcg-notifications"
+LOCATION="mexicocentral"
+NODE_VM_SIZE="Standard_A4_v2"
+NODE_COUNT=1
+NODE_MIN_COUNT=1
+NODE_MAX_COUNT=2
+K8S_VERSION="1.33.5"
+DNS_PREFIX="aks-fcg-notifications-dns"
 NODE_OS_DISK_SIZE=128
 NODE_OS_SKU="Ubuntu"
 ACR_NAME="acrfcg"

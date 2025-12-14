@@ -185,4 +185,4 @@ jobs:
       
       - name: Deploy HPA
         run: |
-             kubectl apply -f Kubernetes/hpa.yaml -n fcg-orders                                 # aplica o HPA
+             kubectl apply -f Kubernetes/hpa.yaml -n fcg-orders                                  # aplica o HPA
