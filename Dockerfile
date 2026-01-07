@@ -21,10 +21,11 @@ RUN dotnet publish API/API.csproj -c Release -o /app/publish --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 
 # Install support to globalization
-RUN apk add --no-cache icu-libs
+RUN apk add --no-cache icu-libs tzdata
 
 # Set .NET to use ICU
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+ENV TZ=America/Sao_Paulo
 
 # Set working directory
 WORKDIR /app
