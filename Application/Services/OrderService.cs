@@ -143,22 +143,19 @@ namespace Application.Services
             var orderEntity = order.ToEntity();
             var orderUpdated = _orderRepository.UpdateOrder(orderEntity);
 
-            if (orderUpdated.Status == OrderStatus.Paid)
+            // Publishing notification to the queue on RabbitMQ (PaymentReceived)
+            var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
+            rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
             {
-                // Publishing notification to the queue on RabbitMQ (PaymentReceived)
-                var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
-                rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
+                RequestId = orderUpdated.OrderId,
+                TemplateId = "OrderStatusChanged",
+                order.Email,
+                Parameters = new Dictionary<string, string>()
                 {
-                    RequestId = orderUpdated.OrderId,
-                    TemplateId = "OrderStatusChanged",
-                    order.Email,
-                    Parameters = new Dictionary<string, string>()
-                    {
-                        { "orderId", orderUpdated.OrderId.ToString() },
-                        { "newStatus", "Paid" }
-                    }
-                });
-            }
+                    { "orderId", orderUpdated.OrderId.ToString() },
+                    { "newStatus", orderUpdated.Status.ToString() }
+                }
+            });
 
             return orderUpdated.ToResponse();
         }
