@@ -102,7 +102,7 @@ namespace Application.Services
                 order.Email,
                 Parameters = new Dictionary<string, string>()
                 {
-                    { "orderId", orderAdded.OrderId.ToString() }
+                    { "{orderId}", orderAdded.OrderId.ToString() }
                 }
             });
 
@@ -130,8 +130,8 @@ namespace Application.Services
                 order.Email,
                 Parameters = new Dictionary<string, string>()
                 {
-                    { "orderId", orderAdded.OrderId.ToString() },
-                    { "newStatus", "AwaitingPayment" }
+                    { "{orderId}", orderAdded.OrderId.ToString() },
+                    { "{newStatus}", "AwaitingPayment" }
                 }
             });
 
@@ -152,8 +152,8 @@ namespace Application.Services
                 order.Email,
                 Parameters = new Dictionary<string, string>()
                 {
-                    { "orderId", orderUpdated.OrderId.ToString() },
-                    { "newStatus", orderUpdated.Status.ToString() }
+                    { "{orderId}", orderUpdated.OrderId.ToString() },
+                    { "{newStatus}", orderUpdated.Status.ToString() }
                 }
             });
 
