@@ -83,6 +83,9 @@ jobs:
              export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
              export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
              export ELASTIC_APM_SERVICE_NAME="${{ vars.ELASTIC_APM_SERVICE_NAME }}"
+             export ELASTIC_APM_ENABLED="${{ vars.ELASTIC_APM_ENABLED }}"
+             export ELASTIC_APM_SERVER_URL="${{ vars.ELASTIC_APM_SERVER_URL }}"
+             export ELASTIC_APM_SECRET_TOKEN="${{ secrets.ELASTIC_APM_SECRET_TOKEN }}"
              export ENV="${{ vars.ENV }}"
              envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-orders-dev -f -            # aplica o configmap com substituição de variáveis
              envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-orders-dev -f -               # aplica o secret com substituição de variáveis
@@ -128,6 +131,9 @@ jobs:
              export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
              export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
              export ELASTIC_APM_SERVICE_NAME="${{ vars.ELASTIC_APM_SERVICE_NAME }}"
+             export ELASTIC_APM_ENABLED="${{ vars.ELASTIC_APM_ENABLED }}"
+             export ELASTIC_APM_SERVER_URL="${{ vars.ELASTIC_APM_SERVER_URL }}"
+             export ELASTIC_APM_SECRET_TOKEN="${{ secrets.ELASTIC_APM_SECRET_TOKEN }}"
              export ENV="${{ vars.ENV }}"
              envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-orders-uat -f -            # aplica o configmap com substituição de variáveis
              envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-orders-uat -f -               # aplica o secret com substituição de variáveis
@@ -135,9 +141,9 @@ jobs:
       - name: Deploy to AKS - UAT
         run: |
              export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"           # tag da imagem Docker
-             # envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-orders-uat -f -           # aplica o deployment com substituição de variáveis
-             # kubectl apply -f Kubernetes/service.yaml -n fcg-orders-uat                             # aplica o service
-             # kubectl rollout status deployment/fcg-orders -n fcg-orders-uat                         # aguarda o rollout completar
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-orders-uat -f -           # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg-orders-uat                             # aplica o service
+             kubectl rollout status deployment/fcg-orders -n fcg-orders-uat                         # aguarda o rollout completar
 
   deploy-prd:
     needs:
@@ -175,6 +181,9 @@ jobs:
              export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
              export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
              export ELASTIC_APM_SERVICE_NAME="${{ vars.ELASTIC_APM_SERVICE_NAME }}"
+             export ELASTIC_APM_ENABLED="${{ vars.ELASTIC_APM_ENABLED }}"
+             export ELASTIC_APM_SERVER_URL="${{ vars.ELASTIC_APM_SERVER_URL }}"
+             export ELASTIC_APM_SECRET_TOKEN="${{ secrets.ELASTIC_APM_SECRET_TOKEN }}"
              export ENV="${{ vars.ENV }}"
              envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-orders -f -            # aplica o configmap com substituição de variáveis
              envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-orders -f -               # aplica o secret com substituição de variáveis
