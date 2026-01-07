@@ -95,7 +95,7 @@ namespace Application.Services
 
             // Publishing notification to the queue on RabbitMQ (OrderReceived)
             var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
-            rabbitMqPublisher.PublishMessageAsync("fcg.notification.queue", new
+            rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
             {
                 orderAdded.OrderId,
                 TemplateId = "OrderReceived",
@@ -119,7 +119,7 @@ namespace Application.Services
             });
 
             // Publishing notification to the queue on RabbitMQ (AwaitingPayment)
-            rabbitMqPublisher.PublishMessageAsync("fcg.notification.queue", new
+            rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
             {
                 orderAdded.OrderId,
                 TemplateId = "AwaitingPayment",
