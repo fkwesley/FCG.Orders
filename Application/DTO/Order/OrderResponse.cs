@@ -9,7 +9,6 @@ namespace Application.DTO.Order
     {
         public int OrderId { get; set; }
         public required string UserId { get; set; }
-        public string Email { get; set; } = string.Empty;
         public IEnumerable<GameResponse> ListOfGames { get; set; } = new List<GameResponse>(); 
         public required OrderStatus Status { get; set; }
         public required PaymentMethod PaymentMethod { get; set; }
