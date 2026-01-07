@@ -8,6 +8,8 @@ namespace Application.DTO.Order
     {
         [JsonIgnore]
         public string? UserId { get; set; }
+        [JsonIgnore]
+        public string? Email { get; set; }
         public IEnumerable<int> ListOfGames { get; set; } = new List<int>();
         public PaymentMethod PaymentMethod { get; set; }
         public PaymentMethodDetails? PaymentMethodDetails { get; set; }

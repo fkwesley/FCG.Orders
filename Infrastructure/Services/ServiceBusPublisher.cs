@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services
 {
-    public class ServiceBusPublisher : IServiceBusPublisher
+    public class ServiceBusPublisher : IMessagePublisher
     {
         private readonly ServiceBusClient _serviceBusClient;
 
@@ -30,6 +30,11 @@ namespace Infrastructure.Services
             }
 
             await sender.SendMessageAsync(serviceBusMessage);
+        }
+
+        public void Dispose()
+        {
+            _serviceBusClient?.DisposeAsync().GetAwaiter().GetResult();
         }
     }
 }
