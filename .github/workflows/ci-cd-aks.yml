@@ -75,6 +75,7 @@ jobs:
         run: |
              export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
              export FCG_SERVICEBUS_CONNECTION_STRING="${{ secrets.FCG_SERVICEBUS_CONNECTION_STRING }}"
+             export FCG_RABBITMQ_CONNECTION_STRING="${{ secrets.FCG_RABBITMQ_CONNECTION_STRING }}" 
              export GAMES_API_AUTH_TOKEN="${{ secrets.GAMES_API_AUTH_TOKEN }}"
              export GAMES_API_SUBSCRIPTION_KEY="${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}"
              export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
@@ -119,6 +120,7 @@ jobs:
         run: |
              export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
              export FCG_SERVICEBUS_CONNECTION_STRING="${{ secrets.FCG_SERVICEBUS_CONNECTION_STRING }}"
+             export FCG_RABBITMQ_CONNECTION_STRING="${{ secrets.FCG_RABBITMQ_CONNECTION_STRING }}" 
              export GAMES_API_AUTH_TOKEN="${{ secrets.GAMES_API_AUTH_TOKEN }}"
              export GAMES_API_SUBSCRIPTION_KEY="${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}"
              export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
@@ -165,6 +167,7 @@ jobs:
         run: |
              export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
              export FCG_SERVICEBUS_CONNECTION_STRING="${{ secrets.FCG_SERVICEBUS_CONNECTION_STRING }}"
+             export FCG_RABBITMQ_CONNECTION_STRING="${{ secrets.FCG_RABBITMQ_CONNECTION_STRING }}" 
              export GAMES_API_AUTH_TOKEN="${{ secrets.GAMES_API_AUTH_TOKEN }}"
              export GAMES_API_SUBSCRIPTION_KEY="${{ secrets.GAMES_API_SUBSCRIPTION_KEY }}"
              export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"

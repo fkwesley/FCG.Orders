@@ -87,6 +87,12 @@ spec:
                   name: fcg-orders-secret
                   key: ConnectionString__FCGServiceBusConnection
 
+            - name: ConnectionString__FCGRabbitMQConnection
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-orders-secret
+                  key: ConnectionString__FCGRabbitMQConnection
+
             - name: NEW_RELIC_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
