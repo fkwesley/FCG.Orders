@@ -138,7 +138,7 @@ namespace Application.Services
             {
                 // Publishing notification to the queue on RabbitMQ (PaymentReceived)
                 var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
-                rabbitMqPublisher.PublishMessageAsync("fcg.notification.queue", new
+                rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
                 {
                     orderUpdated.OrderId,
                     TemplateId = "PaymentReceived",
