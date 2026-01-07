@@ -20,15 +20,15 @@ namespace Application.Services
         private readonly IGameService _gameService;
         private readonly IHttpContextAccessor _httpContext;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IServiceBusPublisher _serviceBusPublisher;
+        private readonly IMessagePublisherFactory _publisherFactory;
 
         public OrderService(
-                IOrderRepository orderRepository, 
+                IOrderRepository orderRepository,
                 ILoggerService loggerService,
                 IGameService gameService,
                 IHttpContextAccessor httpContext,
                 IServiceScopeFactory scopeFactory,
-                IServiceBusPublisher serviceBusPublisher)
+                IMessagePublisherFactory publisherFactory)
         {
             _orderRepository = orderRepository
                 ?? throw new ArgumentNullException(nameof(orderRepository));
@@ -36,7 +36,7 @@ namespace Application.Services
             _gameService = gameService;
             _httpContext = httpContext;
             _scopeFactory = scopeFactory;
-            _serviceBusPublisher = serviceBusPublisher;
+            _publisherFactory = publisherFactory;
         }
 
         public async Task<IEnumerable<OrderResponse>> GetAllOrdersAsync()
@@ -72,7 +72,7 @@ namespace Application.Services
 
             //verifying if there is any active order with some of the games requested
             if (userOrders.Any(o => o.ListOfGames.Any(g => order.ListOfGames.Contains(g.GameId))
-                                 && o.Status != OrderStatus.Cancelled 
+                                 && o.Status != OrderStatus.Cancelled
                                  && o.Status != OrderStatus.Released
                                  && o.Status != OrderStatus.Refunded))
                 throw new ValidationException(string.Format("There is already an active order for the user {0} with one or more of the games requested.", order.UserId.ToUpper()));
@@ -90,26 +90,41 @@ namespace Application.Services
                 game.Price = existingGame.Price;
                 game.Name = existingGame.Name;
             }
-            
+
             var orderAdded = _orderRepository.AddOrder(orderEntity);
 
+            // Publishing notification to the queue on RabbitMQ (OrderReceived)
+            var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
+            rabbitMqPublisher.PublishMessageAsync("fcg.notification.queue", new
+            {
+                orderAdded.OrderId,
+                TemplateId = "OrderReceived",
+                order.Email
+            });
+
             // Publishing payment event to the queue on Azure Service Bus
-            _serviceBusPublisher.PublishMessageAsync(
-                topicName: "fcg.paymentstopic", 
-                message: new 
-                {
-                    orderAdded.OrderId,   
-                    amount = orderAdded.TotalPrice,
-                    orderAdded.PaymentMethod,
-                    order.PaymentMethodDetails?.CardNumber,
-                    order.PaymentMethodDetails?.CardHolder,
-                    order.PaymentMethodDetails?.ExpiryDate,
-                    order.PaymentMethodDetails?.Cvv
-                }, 
-                customProperties: new Dictionary<string, object>
-                {
-                    {"PaymentMethod", orderAdded.PaymentMethod.ToString() }
-                });
+            var serviceBusPublisher = _publisherFactory.GetPublisher("ServiceBus");
+            serviceBusPublisher.PublishMessageAsync("fcg.paymentstopic", new
+            {
+                orderAdded.OrderId,
+                amount = orderAdded.TotalPrice,
+                orderAdded.PaymentMethod,
+                order.PaymentMethodDetails?.CardNumber,
+                order.PaymentMethodDetails?.CardHolder,
+                order.PaymentMethodDetails?.ExpiryDate,
+                order.PaymentMethodDetails?.Cvv
+            },
+            new Dictionary<string, object> {
+                {"PaymentMethod", orderAdded.PaymentMethod.ToString() }
+            });
+
+            // Publishing notification to the queue on RabbitMQ (AwaitingPayment)
+            rabbitMqPublisher.PublishMessageAsync("fcg.notification.queue", new
+            {
+                orderAdded.OrderId,
+                TemplateId = "AwaitingPayment",
+                order.Email
+            });
 
             return orderAdded.ToResponse();
         }
@@ -119,6 +134,18 @@ namespace Application.Services
             var orderEntity = order.ToEntity();
             var orderUpdated = _orderRepository.UpdateOrder(orderEntity);
 
+            if (orderUpdated.Status == OrderStatus.Paid)
+            {
+                // Publishing notification to the queue on RabbitMQ (PaymentReceived)
+                var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
+                rabbitMqPublisher.PublishMessageAsync("fcg.notification.queue", new
+                {
+                    orderUpdated.OrderId,
+                    TemplateId = "PaymentReceived",
+                    order.Email
+                });
+            }
+
             return orderUpdated.ToResponse();
         }
 
@@ -126,6 +153,5 @@ namespace Application.Services
         {
             return _orderRepository.DeleteOrder(id);
         }
-
     }
 }

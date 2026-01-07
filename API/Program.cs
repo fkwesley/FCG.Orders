@@ -5,26 +5,29 @@ using Application.Services;
 using Application.Settings;
 using Azure;
 using Domain.Repositories;
+using Elastic.Apm.NetCoreAll;
 using FCG.Application.Services;
 using Infrastructure.Context;
+using Infrastructure.Factories;
 using Infrastructure.Interfaces;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using Elastic.Apm.NetCoreAll;
 
 #region initializing
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
     .Build();
 
 var jwtKey = configuration["Jwt:Key"];
@@ -134,14 +137,19 @@ builder.Services.AddScoped<IGameService, GameService>();
 
 //infra services
 builder.Services.AddScoped<ILoggerService, LoggerService>();
-builder.Services.AddSingleton<IServiceBusPublisher, ServiceBusPublisher>();
+builder.Services.AddSingleton<IMessagePublisher, RabbitMQPublisher>();
+builder.Services.AddSingleton<IMessagePublisher, ServiceBusPublisher>();
+
+builder.Services.AddSingleton<RabbitMQPublisher>();
+builder.Services.AddSingleton<ServiceBusPublisher>();
+
+builder.Services.AddSingleton<IMessagePublisherFactory, MessagePublisherFactory>();
 
 //repositories
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IDatabaseLoggerRepository, DatabaseLoggerRepository>();
 builder.Services.AddScoped<INewRelicLoggerRepository, NewRelicLoggerRepository>();
-
 
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<OrdersDbContext>(options =>

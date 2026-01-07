@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fcg-orders-config
+data:
+  NEW_RELIC_APP_NAME: "${NEW_RELIC_APP_NAME}"
+  NewRelic__Enabled: "${NEW_RELIC_ENABLED}"
+  NewRelic__Endpoint: "${NEW_RELIC_ENDPOINT}"
+  AspNetCore_Environment: "${ENV}"
+  ElasticApm__ServiceName: "${ELASTIC_APM_SERVICE_NAME}"

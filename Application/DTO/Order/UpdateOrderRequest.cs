@@ -9,6 +9,8 @@ namespace Application.DTO.Order
         [JsonIgnore]
         public int OrderId { get; set; }
         [JsonIgnore]
+        public string? Email { get; set; }
+        [JsonIgnore]
         public string? UserId { get; set; }
         public required OrderStatus Status { get; set; }
     }

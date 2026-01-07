@@ -64,8 +64,9 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Add([FromBody] AddOrderRequest orderRequest)
         {
-            // getting user_id from context (provided by token)
+            // getting user_id and user_email from context (provided by token)
             orderRequest.UserId = HttpContext.User?.FindFirst("user_id")?.Value;
+            orderRequest.Email = HttpContext.User?.FindFirst("user_email")?.Value; 
 
             var createdOrder = _orderService.AddOrder(orderRequest);
             return CreatedAtAction(nameof(GetById), new { id = createdOrder.OrderId }, createdOrder);
@@ -90,6 +91,7 @@ namespace API.Controllers
             {
                 OrderId = id,
                 UserId = HttpContext.User?.FindFirst("user_id")?.Value, // getting user_id from context (provided by token)
+                Email = HttpContext.User?.FindFirst("user_email")?.Value, // getting user_email from context (provided by token)
                 Status = orderStatus
             };
 
