@@ -18,7 +18,7 @@ RUN dotnet build FCG.Orders.sln -c Release --no-restore
 RUN dotnet publish API/API.csproj -c Release -o /app/publish --no-restore
 
 # Stage 2 - Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
 
 # Set working directory
 WORKDIR /app
