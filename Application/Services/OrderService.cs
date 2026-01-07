@@ -97,9 +97,13 @@ namespace Application.Services
             var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
             rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
             {
-                orderAdded.OrderId,
+                RequestId = orderAdded.OrderId,
                 TemplateId = "OrderReceived",
-                order.Email
+                order.Email,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "orderId", orderAdded.OrderId.ToString() }
+                }
             });
 
             // Publishing payment event to the queue on Azure Service Bus
@@ -121,9 +125,14 @@ namespace Application.Services
             // Publishing notification to the queue on RabbitMQ (AwaitingPayment)
             rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
             {
-                orderAdded.OrderId,
-                TemplateId = "AwaitingPayment",
-                order.Email
+                RequestId = orderAdded.OrderId,
+                TemplateId = "OrderStatusChanged",
+                order.Email,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "orderId", orderAdded.OrderId.ToString() },
+                    { "newStatus", "AwaitingPayment" }
+                }
             });
 
             return orderAdded.ToResponse();
@@ -134,17 +143,19 @@ namespace Application.Services
             var orderEntity = order.ToEntity();
             var orderUpdated = _orderRepository.UpdateOrder(orderEntity);
 
-            if (orderUpdated.Status == OrderStatus.Paid)
+            // Publishing notification to the queue on RabbitMQ (PaymentReceived)
+            var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
+            rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
             {
-                // Publishing notification to the queue on RabbitMQ (PaymentReceived)
-                var rabbitMqPublisher = _publisherFactory.GetPublisher("RabbitMQ");
-                rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
+                RequestId = orderUpdated.OrderId,
+                TemplateId = "OrderStatusChanged",
+                order.Email,
+                Parameters = new Dictionary<string, string>()
                 {
-                    orderUpdated.OrderId,
-                    TemplateId = "PaymentReceived",
-                    order.Email
-                });
-            }
+                    { "orderId", orderUpdated.OrderId.ToString() },
+                    { "newStatus", orderUpdated.Status.ToString() }
+                }
+            });
 
             return orderUpdated.ToResponse();
         }
