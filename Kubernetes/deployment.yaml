@@ -1,7 +1,7 @@
 apiVersion: apps/v1                                                         # Versão da API do Kubernetes usada para criar Deployments
 kind: Deployment                                                            # Tipo do objeto: Deployment cria réplicas e faz rollout
 metadata:
-  name: fcg-orders                                                           # Nome do Deployment
+  name: fcg-orders                                                          # Nome do Deployment
 
 spec:
   replicas: 1                                                               # Quantas réplicas (pods) deseja rodar
@@ -16,8 +16,8 @@ spec:
 
     spec:
       containers:                                                           # Lista de containers dentro do Pod
-        - name: fcg-orders-container                                         # Nome do container
-          image: acrfcg.azurecr.io/fiapcloudgames/orders/api:${IMAGE_TAG}    # Imagem do container no ACR
+        - name: fcg-orders-container                                        # Nome do container
+          image: acrfcg.azurecr.io/fiapcloudgames/orders/api:${IMAGE_TAG}   # Imagem do container no ACR
           ports:                                                            # Porta exposta internamente no container
             - containerPort: 8080
           resources:
