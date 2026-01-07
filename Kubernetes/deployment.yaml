@@ -42,71 +42,12 @@ spec:
             requests:
               cpu: 150m         # Sobra ~1,1 vCPU para kube-system + picos
               memory: 200Mi     # Sobra ~1,7 GiB para kube-system + DaemonSets
-          env:
-            # from ConfigMap
-            - name: NEW_RELIC_APP_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: fcg-orders-config
-                  key: NEW_RELIC_APP_NAME
-
-            - name: NewRelic__Enabled
-              valueFrom:
-                configMapKeyRef:
-                  name: fcg-orders-config
-                  key: NewRelic__Enabled
-
-            - name: NewRelic__Endpoint
-              valueFrom:
-                configMapKeyRef:
-                  name: fcg-orders-config
-                  key: NewRelic__Endpoint
-
-            - name: AspNetCore_Environment
-              valueFrom:
-                configMapKeyRef:
-                  name: fcg-orders-config
-                  key: AspNetCore_Environment
-            
-            - name: ElasticApm__ServiceName
-              valueFrom:
-                configMapKeyRef:
-                  name: fcg-orders-config
-                  key: ElasticApm__ServiceName   
-
-            # from Secret
-            - name: ConnectionStrings__FCGUsersDbConnection
-              valueFrom:
-                secretKeyRef:
-                  name: fcg-orders-secret
-                  key: ConnectionStrings__FCGUsersDbConnection
-
-            - name: ConnectionString__FCGServiceBusConnection
-              valueFrom:
-                secretKeyRef:
-                  name: fcg-orders-secret
-                  key: ConnectionString__FCGServiceBusConnection
-
-            - name: ConnectionString__FCGRabbitMQConnection
-              valueFrom:
-                secretKeyRef:
-                  name: fcg-orders-secret
-                  key: ConnectionString__FCGRabbitMQConnection
-
-            - name: NEW_RELIC_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: fcg-orders-secret
-                  key: NEW_RELIC_LICENSE_KEY
-            
-            - name: GamesApi__AuthToken
-              valueFrom:
-                secretKeyRef:
-                  name: fcg-orders-secret
-                  key: GamesApi__AuthToken
-
-            - name: GamesApi__SubscriptionKey
-              valueFrom:
-                secretKeyRef:
-                  name: fcg-orders-secret
-                  key: GamesApi__SubscriptionKey
+          
+          # ==========================
+          # Variáveis de ambiente
+          # ==========================
+          envFrom:
+            - configMapRef:
+                name: fcg-orders-config
+            - secretRef:
+                name: fcg-orders-secret
