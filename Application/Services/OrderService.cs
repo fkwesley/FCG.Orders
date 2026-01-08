@@ -116,7 +116,8 @@ namespace Application.Services
                 order.PaymentMethodDetails?.CardNumber,
                 order.PaymentMethodDetails?.CardHolder,
                 order.PaymentMethodDetails?.ExpiryDate,
-                order.PaymentMethodDetails?.Cvv
+                order.PaymentMethodDetails?.Cvv,
+                order.Email
             },
             new Dictionary<string, object> {
                 {"PaymentMethod", orderAdded.PaymentMethod.ToString() }
