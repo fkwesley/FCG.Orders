@@ -11,3 +11,4 @@ data:
   ElasticApm__ServerUrl: "${ELASTIC_APM_SERVER_URL}"
   ElasticApm__ServiceName: "${ELASTIC_APM_SERVICE_NAME}"
   ElasticApm__Environment: "${ENV}"
+  GamesAPI__EndPoint: "${GAMES_API_ENDPOINT}"
