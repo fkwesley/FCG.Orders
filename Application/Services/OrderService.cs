@@ -122,19 +122,6 @@ namespace Application.Services
                 {"PaymentMethod", orderAdded.PaymentMethod.ToString() }
             });
 
-            // Publishing notification to the queue on RabbitMQ (AwaitingPayment)
-            rabbitMqPublisher.PublishMessageAsync("fcg.notifications.queue", new
-            {
-                RequestId = orderAdded.OrderId,
-                TemplateId = "OrderStatusChanged",
-                order.Email,
-                Parameters = new Dictionary<string, string>()
-                {
-                    { "{orderId}", orderAdded.OrderId.ToString() },
-                    { "{newStatus}", "AwaitingPayment" }
-                }
-            });
-
             return orderAdded.ToResponse();
         }
 
