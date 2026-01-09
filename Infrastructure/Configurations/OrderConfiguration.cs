@@ -16,6 +16,10 @@ namespace FCG.Infrastructure.Configurations
                    .HasMaxLength(20)
                    .IsRequired(true);
 
+            builder.Property(o => o.UserEmail)
+                   .HasMaxLength(100)
+                   .IsRequired(true);
+
             builder.Property(o => o.Status)
                    .HasField("_status") // mapping the private field
                    .IsRequired()

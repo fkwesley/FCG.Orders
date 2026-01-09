@@ -18,6 +18,7 @@ namespace Infrastructure.Migrations
                     OrderId = table.Column<int>(type: "INT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    UserEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Status = table.Column<int>(type: "INT", nullable: false),
                     PaymentMethod = table.Column<int>(type: "INT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),

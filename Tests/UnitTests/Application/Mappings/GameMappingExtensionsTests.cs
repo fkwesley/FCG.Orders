@@ -63,6 +63,7 @@ namespace Tests.UnitTests.Application.Mappings
             {
                 OrderId = 99,
                 UserId = "MAX.PAYNE",
+                UserEmail = "max.payne@email.com",
                 ListOfGames = games,
                 PaymentMethod = PaymentMethod.CreditCard,
                 PaymentMethodDetails = paymentDetails,

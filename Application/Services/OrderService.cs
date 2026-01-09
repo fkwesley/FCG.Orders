@@ -137,7 +137,7 @@ namespace Application.Services
             {
                 RequestId = orderUpdated.OrderId,
                 TemplateId = "OrderStatusChanged",
-                order.Email,
+                Email = orderUpdated.UserEmail,
                 Parameters = new Dictionary<string, string>()
                 {
                     { "{orderId}", orderUpdated.OrderId.ToString() },

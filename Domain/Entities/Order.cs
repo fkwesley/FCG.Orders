@@ -11,6 +11,7 @@ namespace Domain.Entities
         [DebuggerDisplay("OrderId: {OrderId}, UserId: {UserId}, ListOfGames: {ListOfGames.Count}, Status: {Status}")]
         public int OrderId { get; set; }
         public required string UserId { get; set; }
+        public required string UserEmail { get; set; }
         public ICollection<Game> ListOfGames { get; set; } = new List<Game>(); // Propriedade de navegação para os jogos selecionados
         public required OrderStatus Status
         {
