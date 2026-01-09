@@ -5,7 +5,7 @@
 RESOURCE_GROUP="RG_FCG"
 CLUSTER_NAME="aks-fcg-users"
 LOCATION="canadacentral"
-NODE_VM_SIZE="Standard_A2_v2"
+NODE_VM_SIZE="Standard_B2s_v2"
 NODE_COUNT=1
 NODE_MIN_COUNT=1
 NODE_MAX_COUNT=10
@@ -42,7 +42,7 @@ az aks create \
 RESOURCE_GROUP="RG_FCG"
 CLUSTER_NAME="aks-fcg-games"
 LOCATION="eastus"
-NODE_VM_SIZE="Standard_A4_v2"
+NODE_VM_SIZE="Standard_DC2as_v5"
 NODE_COUNT=1
 NODE_MIN_COUNT=1
 NODE_MAX_COUNT=5
@@ -81,7 +81,7 @@ az aks create \
 RESOURCE_GROUP="RG_FCG"
 CLUSTER_NAME="aks-fcg-orders"
 LOCATION="northcentralus"
-NODE_VM_SIZE="Standard_A4_v2"
+NODE_VM_SIZE="Standard_D2_v3"
 NODE_COUNT=1
 NODE_MIN_COUNT=1
 NODE_MAX_COUNT=5
@@ -121,7 +121,7 @@ az aks create \
 RESOURCE_GROUP="RG_FCG"
 CLUSTER_NAME="aks-fcg-payments"
 LOCATION="chilecentral"
-NODE_VM_SIZE="Standard_A4_v2"
+NODE_VM_SIZE="Standard_B2s_v2"
 NODE_COUNT=1
 NODE_MIN_COUNT=1
 NODE_MAX_COUNT=5
@@ -160,7 +160,7 @@ az aks create \
 RESOURCE_GROUP="RG_FCG"
 CLUSTER_NAME="aks-fcg-notifications"
 LOCATION="mexicocentral"
-NODE_VM_SIZE="Standard_A4_v2"
+NODE_VM_SIZE="Standard_B2s_v2"
 NODE_COUNT=1
 NODE_MIN_COUNT=1
 NODE_MAX_COUNT=5
