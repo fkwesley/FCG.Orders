@@ -17,6 +17,7 @@ namespace Application.Mappings
                 PaymentMethod = request.PaymentMethod,
                 Status = OrderStatus.PendingPayment,
                 UserId = request.UserId.ToUpper(),
+                UserEmail = request.Email,
                 PaymentMethodDetails = request.PaymentMethodDetails,
                 ListOfGames = request.ListOfGames.Select(id => new Game { GameId = id }).ToList()
             };
@@ -31,6 +32,7 @@ namespace Application.Mappings
                 OrderId = request.OrderId,
                 Status = request.Status,
                 UserId = request.UserId.ToUpper(),
+                UserEmail = string.Empty,         // Default value, as it's not provided in the update request
                 PaymentMethod = PaymentMethod.Pix // Default value, as it's not provided in the update request
             };
         }
@@ -43,6 +45,7 @@ namespace Application.Mappings
             {
                 OrderId = entity.OrderId,
                 UserId = entity.UserId.ToUpper(),
+                UserEmail = entity.UserEmail.ToLower(),
                 PaymentMethod = entity.PaymentMethod,
                 Status = entity.Status,
                 ListOfGames = entity.ListOfGames.Select(game => new GameResponse
